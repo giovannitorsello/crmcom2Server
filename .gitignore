@@ -4,6 +4,7 @@ bin/
 log/
 documents/
 uploads/
+certs/
 config.json
 *.json
 *.jpg
