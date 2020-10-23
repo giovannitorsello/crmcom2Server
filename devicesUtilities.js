@@ -1,4 +1,4 @@
-const config = require("./config.js");
+const config = require("./config.js").load();
 fs = require('fs')
 path = require('path')
 NodeSSH = require('node-ssh')

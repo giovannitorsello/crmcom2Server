@@ -1,4 +1,4 @@
-const config = require("./config.js");
+const config = require("./config.js").load();
 const utility = require("./utility.js");
 const mailer = require("./mailer.js");
 const formidable = require('formidable');

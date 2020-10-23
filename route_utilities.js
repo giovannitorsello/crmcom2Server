@@ -1,4 +1,4 @@
-var config = require("./config.js");
+const config = require("./config.js").load();
 var utility = require("./utility.js");
 
 
@@ -14,10 +14,17 @@ var proj4 = require('proj4');
 
 module.exports = {
     load_routes(app,database) {
+
+        app.post("/config/serviceCategories", function (req, res) {
+            if(config && config.serviceCategories)
+                res.send(JSON.stringify(config.serviceCategories));
+            else
+                res.send(JSON.stringify({}));
+        });
+
         app.get("/data_csv/postalcodes", function (req, res) {
             res.send(JSON.stringify(utility.get_postalcodes()));
         });
-
 
         app.get("/data_csv/countries", function (req, res) {
             res.send(JSON.stringify(utility.get_countries()));

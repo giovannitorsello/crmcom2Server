@@ -1,4 +1,4 @@
-const config = require("./config.js");
+const config = require("./config.js").load();
 const ping = require('ping');
 const { fork } = require('child_process');
 var snmp = require("net-snmp");

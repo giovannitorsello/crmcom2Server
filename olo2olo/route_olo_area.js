@@ -1,4 +1,4 @@
-var config = require("../config.js");
+const config = require("../config.js").load();
 var utility = require("../utility.js");
 var dataStructureMigration = require('./dataStructuresMigration.js');
 var validator = require('xsd-schema-validator');
@@ -102,8 +102,8 @@ function sendFileXml(serverOlo, xmlFile, callback) {
 
 module.exports = {
     testN1() {
-        xmlFile = __dirname + "/testXML/n1.xml";
-        validateXMLFile(xmlFile, __dirname + "/xsd/xml1.xsd", res => {
+        xmlFile = process.cwd() + "/data/testXML/n1.xml";
+        validateXMLFile(xmlFile, process.cwd() + "/data/xsd/xml1.xsd", res => {
             if (res.status === "OK") {
                 sendFileXml(sandBoxTIM, xmlFile, ans => {
                     console.log(ans);
@@ -134,7 +134,7 @@ module.exports = {
         olo2oloApp.post("/olo2olo/N1RecToWhslMigrationRequest", function (req, res) {
             //Call xmlConverter.
             xmlFile = "prova.xml";
-            validateXMLFile(xmlFile, __dirname + "./wsld/RecipientMigrationService_rev1.xsd", res => {
+            validateXMLFile(xmlFile, process.cwd() + "/data/wsld/RecipientMigrationService_rev1.xsd", res => {
                 if (res.status === "OK") {
                     sendFile(sandBoxTIM, xmlFile, ans => {
                         console.log(ans);

@@ -1,3 +1,4 @@
+const config = require("./config.js").load();
 var path = require('path');
 var fs = require('fs');
 var async = require("async");
@@ -32,8 +33,8 @@ module.exports = {
         files.forEach(element => {
             let file = element;
 
-            var oldpath = path.join(__dirname, file.path);
-            var newpath = path.join(__dirname, file.path) + (new Date().toTimeString()) + ".xml";
+            var oldpath = path.join(process.cwd(), file.path);
+            var newpath = path.join(process.cwd(), file.path) + (new Date().toTimeString()) + ".xml";
 
             fs.rename(oldpath, newpath, function (err) {
                 if (err) throw err;

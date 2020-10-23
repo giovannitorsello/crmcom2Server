@@ -1,6 +1,6 @@
+const config = require("./config.js").load();
 const PDFDocument = require('pdfkit');
 const pdftk = require('node-pdftk');
-const config = require('./config.js');
 const fs = require('fs');
 
 module.exports = {

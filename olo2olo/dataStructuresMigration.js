@@ -1,3 +1,4 @@
+const config = require("../config.js").load();
 module.exports = {
 
     //Notificatoin for FTTH migration

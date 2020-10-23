@@ -1,14 +1,15 @@
-var config = require("../config.js");
+const config = require("../config.js").load();
 var utility = require("../utility.js");
 var routes_olo_area=require('./route_olo_area.js')
 
+const fs= require('fs');
 const https = require('https');
 var express = require('express');
 
-const xmlDonatingMigrationNotify  = require('fs').readFileSync(__dirname+'/wsdl/DonatingMigrationNotify_rev1.wsdl', 'utf8');
-const xmlDonatingMigrationService = require('fs').readFileSync(__dirname+'/wsdl/DonatingMigrationService_rev1.wsdl', 'utf8');
-const xmlRecipientMigrationNotify  = require('fs').readFileSync(__dirname+'/wsdl/RecipientMigrationNotify_rev1.wsdl', 'utf8');
-const xmlRecipientMigrationService = require('fs').readFileSync(__dirname+'/wsdl/RecipientMigrationService_rev1.wsdl', 'utf8');
+const xmlDonatingMigrationNotify  = require('fs').readFileSync(process.cwd()+'/data/wsdl/DonatingMigrationNotify_rev1.wsdl', 'utf8');
+const xmlDonatingMigrationService = require('fs').readFileSync(process.cwd()+'/data/wsdl/DonatingMigrationService_rev1.wsdl', 'utf8');
+const xmlRecipientMigrationNotify  = require('fs').readFileSync(process.cwd()+'/data/wsdl/RecipientMigrationNotify_rev1.wsdl', 'utf8');
+const xmlRecipientMigrationService = require('fs').readFileSync(process.cwd()+'/data/wsdl/RecipientMigrationService_rev1.wsdl', 'utf8');
 
 const options = {
     key: fs.readFileSync('/etc/letsencrypt/live/olo2olo.wifinetcom.net/privkey.pem','utf8'),

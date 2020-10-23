@@ -1,5 +1,6 @@
-var config = require("./config.js");
+const config = require("./config.js").load();
 var path = require('path');
+
 const { Sequelize, Model, DataTypes, QueryTypes } = require('sequelize');
 const sequelize = new Sequelize(config.database);
 sequelize.options.logging = true;

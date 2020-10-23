@@ -1,3 +1,4 @@
+const config = require("./config.js").load();
 module.exports = {
     checkCodiceFiscale(codfis) {
         return CodiceFiscale.validate(codfis);

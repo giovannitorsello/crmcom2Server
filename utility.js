@@ -1,4 +1,5 @@
 
+const config = require("./config.js").load();
 var randtoken = require('rand-token');
 const csv = require('csv-parser');
 const es = require('event-stream')
@@ -9,7 +10,6 @@ const nodemailer = require('nodemailer');
 const couchdb = require('./couchdb.js');
 const database = require('./database.js');
 const fiscal_check = require('./fiscal_check.js')
-var config = require('./config.js');
 
 
 var list_cities = new Array();
