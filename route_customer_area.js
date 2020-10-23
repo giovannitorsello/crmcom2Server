@@ -28,7 +28,7 @@ module.exports = {
         });
 
         app.post("/customerarea/get_customer_contracts", function (req, res) {
-            var customer = req.session.customer;
+            var customer = req.body.customer;
             database.entities.contract.findAll({ where: { customerId: customer.id } }).then(function (results) {
                 if (results !== null && results[0] !== null) {
                     req.body.contracts = results[0];

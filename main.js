@@ -4,7 +4,7 @@ var utility = require("./utility.js");
 const fs = require('fs');
 const https = require('https');
 const http = require('http');
-
+var session = require('express-session')
 //Geo library
 var proj4 = require('proj4');
 
@@ -29,6 +29,14 @@ var routes_utilities = require("./route_utilities.js");
 var pingServerProcess=null;
 var app = express();
 
+app.set('trust proxy', 1) // trust first proxy
+app.use(session({
+  secret: 'crmcom-wifinetcom-2020',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}))
+
 //settin process to clean temporary folder as cache and uploads 
 var fileWatcherUpload = new FileCleaner(process.cwd() + '/uploads/', 600000, '* */45 * * * *', { start: true });
 var fileWatcherCache = new FileCleaner(process.cwd() + '/cache/', 600000, '* */45 * * * *', { start: true });
@@ -37,7 +45,7 @@ process.on('unhandledRejection', error => { console.log('Warning', error.message
 process.chdir(process.cwd());
 
 
-
+app.use(cors());
 //enable cross origin
 app.use(cors());
 //covert body to JSON

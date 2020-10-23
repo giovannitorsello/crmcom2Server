@@ -50,7 +50,7 @@ module.exports = {
             var url = config.firewallcommandserver.protocol +
                 config.firewallcommandserver.host + ":" +
                 config.firewallcommandserver.port + "/reload/firewall/rules"
-            axios.post(url, { secret: config.firewallcommandserver.secret})
+            axios.post(url, { secret: config.firewallcommandserver.secret })
                 .then(response => {
                     res.send({ status: response.data.status, msg: response.data.msg, result: response.data.result });
                 })
@@ -63,7 +63,7 @@ module.exports = {
             var url = config.firewallcommandserver.protocol +
                 config.firewallcommandserver.host + ":" +
                 config.firewallcommandserver.port + "/reload/firewall/bandwidth"
-            axios.post(url, { secret: config.firewallcommandserver.secret})
+            axios.post(url, { secret: config.firewallcommandserver.secret })
                 .then(response => {
                     res.send({ status: response.data.status, msg: response.data.msg, result: response.data.result });
                 })
@@ -232,7 +232,6 @@ module.exports = {
             database.entities.olo2olo.findOne({ where: { id: id_obj } }).then(function (oloEntity) {
                 if (oloEntity) {
                     res.send({ status: 'OK', msg: 'Olo entity found', olo: oloEntity });
-                    req.session.olo = oloEntity;
                 }
                 else
                     res.send({ status: 'error', msg: 'Olo entity not found', olo: {} });
@@ -284,7 +283,6 @@ module.exports = {
                 database.entities.olo2olo.findOne({ where: { id: oloToDel.id } }).then(function (obj) {
                     if (obj !== null) {
                         obj.destroy();
-                        req.session.olo = {};
                         res.send({ status: 'OK', msg: 'Olo entity deleted successfully', olo: obj });
                     }
                     else {
@@ -300,7 +298,6 @@ module.exports = {
             database.entities.invoiceEntry.findOne({ where: { id: id_obj } }).then(function (invEntry) {
                 if (invEntry) {
                     res.send({ status: 'OK', msg: 'Invoice entry found', invoiceEntry: invEntry });
-                    req.session.invoiceEntry = invEntry;
                 }
                 else
                     res.send({ status: 'error', msg: 'Invoice entry not found', invoiceEntry: {} });
@@ -358,7 +355,6 @@ module.exports = {
                 database.entities.invoiceEntry.findOne({ where: { id: invEntryToDel.id } }).then(function (obj) {
                     if (obj !== null) {
                         obj.destroy();
-                        req.session.invoiceEntry = {};
                         res.send({ status: 'OK', msg: 'Invoice entry deleted successfully', invoiceEntry: obj });
                     }
                     else {
@@ -373,7 +369,6 @@ module.exports = {
             var id_obj = req.body.id;
             database.entities.invoice.findOne({ where: { id: id_obj } }).then(function (inv) {
                 if (inv) {
-                    req.session.invoice = inv;
                     res.send({ status: 'OK', msg: 'Invoice found', invoice: inv });
                 }
                 else
@@ -438,7 +433,6 @@ module.exports = {
                 database.entities.invoice.findOne({ where: { id: objsel.id } }).then(function (obj) {
                     if (obj !== null) {
                         obj.destroy();
-                        req.session.invoice_selected = null;
                         res.send({ status: 'OK', msg: 'Invoice deleted successfully', invoice: obj });
                     }
                     else {
@@ -452,7 +446,6 @@ module.exports = {
             var idDevice = req.body.idDevice;
             database.entities.deviceCustomer.findOne({ where: { id: idDevice } }).then(function (dev) {
                 if (dev) {
-                    req.session.device = dev;
                     res.send({ status: 'OK', msg: 'Device found', deviceCustomer: dev });
                 }
                 else
@@ -547,7 +540,6 @@ module.exports = {
             database.entities.deviceCustomer.findOne({ where: { id: objsel.id } }).then(function (obj) {
                 if (obj !== null) {
                     obj.destroy();
-                    req.session.device_selected = null;
                     res.send({ status: 'OK', msg: 'Device deleted successfully', deviceCustomer: obj });
                 }
                 else {
@@ -625,7 +617,6 @@ module.exports = {
             var id_obj = req.body.id;
             database.entities.serviceTemplate.findOne({ where: { id: id_obj } }).then(function (service) {
                 if (service !== null) {
-                    req.session.serviceTemplate = service;
                     res.send({ status: 'OK', msg: 'Service template found', serviceTemplate: service });
                 }
                 else {
@@ -690,7 +681,6 @@ module.exports = {
             database.entities.serviceTemplate.findOne({ where: { id: objsel.id } }).then(function (obj) {
                 if (obj !== null) {
                     obj.destroy();
-                    req.session.serviceTemplate_selected = null;
                     res.send({ status: 'OK', msg: 'Service template deleted successfully', data: obj });
                 }
                 else {
@@ -704,7 +694,6 @@ module.exports = {
         app.post("/adminarea/contractService/get_by_id", function (req, res) {
             var id_obj = req.body.idContractService;
             database.entities.contractService.findOne({ where: { id: id_obj } }).then(function (item) {
-                req.session.contractService_selected = item;
                 res.send({ status: "OK", msg: "Service contract selected", data: item });
             });
         });
@@ -800,8 +789,7 @@ module.exports = {
             var idContract = req.body.idContract;
             if (idContract)
                 database.entities.contract.findOne({ where: { id: idContract } }).then(function (ctr) {
-                    if (ctr) {
-                        req.session.contract = ctr;
+                    if (ctr) {                        
                         res.send({ status: 'OK', msg: 'Contract found', contract: ctr });
                     }
                     else
@@ -866,20 +854,17 @@ module.exports = {
         });
 
         app.post("/adminarea/contract/delete", function (req, res) {
-            if (req.session.contract_selected) {
-                var objsel = req.session.contract_selected;
-                database.entities.contract.findOne({ where: { id: objsel.id } }).then(function (obj) {
-                    if (obj !== null) {
-                        //Check if invoices exists
-                        obj.destroy();
-                        req.session.contract_selected = null;
-                        res.send({ status: 'OK', msg: 'Contract deleted successfully', data: obj });
-                    }
-                    else {
-                        res.send({ status: 'error', msg: 'Contract delete error', data: objsel });
-                    }
-                });
-            }
+            var objsel = req.session.contract_selected;
+            database.entities.contract.findOne({ where: { id: objsel.id } }).then(function (obj) {
+                if (obj !== null) {
+                    //Check if invoices exists
+                    obj.destroy();
+                    res.send({ status: 'OK', msg: 'Contract deleted successfully', data: obj });
+                }
+                else {
+                    res.send({ status: 'error', msg: 'Contract delete error', data: objsel });
+                }
+            });
         });
 
         app.post("/adminarea/contract/get_all_by_customer", function (req, res) {
@@ -897,8 +882,7 @@ module.exports = {
         /////////////////////Customer ///////////////////////////
         app.post("/adminarea/customer/get_by_id", function (req, res) {
             var userId = req.body.customerId;
-            database.entities.customer.findOne({ where: { id: userId } }).then(function (customer) {
-                req.session.customer = customer;
+            database.entities.customer.findOne({ where: { id: userId } }).then(function (customer) {                
                 res.send({ status: 'OK', msg: 'Customer found', data: customer });
             });
         });
@@ -918,8 +902,7 @@ module.exports = {
                     obj.password = utility.makePassword(8);
                     database.entities.customer.create(obj).then(function (cstnew) {
                         if (cstnew !== null) {
-                            res.send({ status: 'OK', msg: 'Customer create successfully', data: cstnew });
-                            req.session.customer_selected = cstnew;
+                            res.send({ status: 'OK', msg: 'Customer create successfully', data: cstnew });                            
                         }
                     });
                 }
@@ -977,8 +960,7 @@ module.exports = {
 
                     cst.save().then(function (cstupdate) {
                         if (cstupdate !== null) {
-                            res.send({ status: 'OK', msg: 'Customer update successfully', customer: cstupdate });
-                            req.session.customer = cstupdate;
+                            res.send({ status: 'OK', msg: 'Customer update successfully', customer: cstupdate });                            
                         }
                         else {
                             res.send({ status: 'error', msg: 'Customer update error', customer: cst });
@@ -990,8 +972,7 @@ module.exports = {
                     customer_updated.uid = utility.makeUuid();
                     database.entities.customer.create(customer_updated).then((cstnew) => {
                         if (cstnew !== null) {
-                            res.send({ status: 'OK', msg: 'New customer insert successfully', customer: cstnew });
-                            req.session.customer = cstnew;
+                            res.send({ status: 'OK', msg: 'New customer insert successfully', customer: cstnew });                            
                         }
                         else {
                             res.send({ status: 'error', msg: 'Customer insert error', customer: cstnew });
@@ -1035,8 +1016,7 @@ module.exports = {
             if (userId)
                 database.entities.user.findOne({ where: { id: userId } }).then(function (user) {
                     if (user) {
-                        res.send({ status: 'OK', msg: 'Users found', user: results });
-                        req.session.user = user;
+                        res.send({ status: 'OK', msg: 'Users found', user: results });                        
                     }
                     else
                         res.send({ status: 'OK', msg: 'Users not found', user: {} });
@@ -1103,8 +1083,7 @@ module.exports = {
                     usr.role = user_updated.role;
 
                     usr.save().then(function (usrupdate) {
-                        if (usrupdate !== null) {
-                            req.session.user = usrupdate;
+                        if (usrupdate !== null) {                            
                             res.send({ status: 'OK', msg: 'User update successfully', user: usrupdate });
                         }
                         else {
@@ -1119,8 +1098,7 @@ module.exports = {
             var usr = req.body.user;
             database.entities.user.findOne({ where: { id: usr.id } }).then(function (usertodel) {
                 if (usertodel !== null) {
-                    usertodel.destroy();
-                    req.session.user = {};
+                    usertodel.destroy();                    
                     res.send({ status: 'OK', msg: 'User deleted successfully', user: usertodel });
                 }
                 else {
@@ -1134,8 +1112,7 @@ module.exports = {
         app.post("/adminarea/siteBackbone/get_by_id", function (req, res) {
             var idSite = req.body.idSite;
             database.entities.siteBackbone.findOne({ where: { id: idSite } }).then(function (site) {
-                if (site) {
-                    req.session.site = site;
+                if (site) {                    
                     res.send({ status: 'OK', msg: 'Site found', siteBackbone: site });
                 }
                 else
@@ -1217,8 +1194,7 @@ module.exports = {
             var objsel = req.body.siteBackbone;
             database.entities.siteBackbone.findOne({ where: { id: objsel.id } }).then(function (obj) {
                 if (obj !== null) {
-                    obj.destroy();
-                    req.session.siteBAckbone = null;
+                    obj.destroy();                    
                     res.send({ status: 'OK', msg: 'Site deleted successfully', siteBackbone: objsel });
                 }
                 else {
@@ -1242,8 +1218,7 @@ module.exports = {
         app.post("/adminarea/deviceBackbone/get_by_id", function (req, res) {
             var idDevice = req.body.idDevice;
             database.entities.deviceBackbone.findOne({ where: { id: idDevice } }).then(function (dev) {
-                if (dev) {
-                    req.session.device = dev;
+                if (dev) {                    
                     res.send({ status: 'OK', msg: 'Device found', deviceCustomer: dev });
                 }
                 else
@@ -1316,8 +1291,7 @@ module.exports = {
             var objsel = req.body.deviceBackbone;
             database.entities.deviceBackbone.findOne({ where: { id: objsel.id } }).then(function (obj) {
                 if (obj !== null) {
-                    obj.destroy();
-                    req.session.device_selected = null;
+                    obj.destroy();                    
                     res.send({ status: 'OK', msg: 'Device deleted successfully', deviceBackbone: obj });
                 }
                 else {
@@ -1338,7 +1312,6 @@ module.exports = {
                 }
                 else {
                     //Login accepted
-                    req.session.user = usr;
                     res.send({ status: "OK", msg: "Login accepted.", user: usr });
                     //res.redirect("/customerarea/main");
                 }
