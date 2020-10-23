@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions name="DonatingMigrationService" targetNamespace="http://wholesalesoperator/wsdl/DonatingMigrationService.wsdl" xmlns:ns="http://wholesalesoperator/wsdl/DonatingMigrationService.wsdl" xmlns:ns0="http://wholesalesoperator/Schemas/DonatingMigrationServiceSchema.xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <wsdl:types>
+        <xsd:schema xmlns:tns="http://wholesalesoperator/Schemas/DonatingMigrationServiceSchema.xsd" elementFormDefault="qualified" targetNamespace="http://wholesalesoperator/Schemas/DonatingMigrationServiceSchema.xsd">
+            <xsd:element name="Don_Check_sessione_Req" type="tns:Don_Check_sessione_Req_Type" />
+            <xsd:complexType name="Don_Check_sessione_Req_Type">
+                <xsd:sequence>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="CODICE_ORDINE_WHS">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+							    <xsd:minLength value="1"/>
+                                <xsd:maxLength value="18" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="ID_NOTIFICA">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+							    <xsd:minLength value="1"/>
+                                <xsd:maxLength value="100" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="DATA_NOTIFICA" type="xsd:dateTime" />
+                    <xsd:element minOccurs="1" maxOccurs="1" name="ESITO">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:enumeration value="OK" />
+                                <xsd:enumeration value="KO" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" maxOccurs="1" name="CODICE_MOTIVAZIONE">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+							    <xsd:minLength value="1"/>
+                                <xsd:maxLength value="3" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" maxOccurs="1" name="MOTIVAZIONE">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+							    <xsd:minLength value="1"/>
+                                <xsd:maxLength value="255" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" maxOccurs="1" name="NOTE">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+							    <xsd:minLength value="1"/>
+                                <xsd:maxLength value="255" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="Don_Check_sessione_Resp" type="tns:Don_Check_sessione_Resp_Type" />
+            <xsd:complexType name="Don_Check_sessione_Resp_Type">
+                <xsd:sequence>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="ID_NOTIFICA">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+							    <xsd:minLength value="1"/>
+                                <xsd:maxLength value="100" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="ESITO">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:enumeration value="0" />
+                                <xsd:enumeration value="1" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" maxOccurs="1" name="CODICE_MOTIVAZIONE">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+							    <xsd:minLength value="1"/>
+                                <xsd:maxLength value="3" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" maxOccurs="1" name="MOTIVAZIONE">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+							    <xsd:minLength value="1"/>
+                                <xsd:maxLength value="255" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="Don_Check_sessione_Request">
+        <wsdl:part name="in" element="ns0:Don_Check_sessione_Req" />
+    </wsdl:message>
+    <wsdl:message name="Don_Check_sessione_Response">
+        <wsdl:part name="out" element="ns0:Don_Check_sessione_Resp" />
+    </wsdl:message>
+    <wsdl:portType name="DonatingMigrationService">
+        <wsdl:operation name="Don_Check_sessione">
+            <wsdl:input name="Request" message="ns:Don_Check_sessione_Request" />
+            <wsdl:output name="Response" message="ns:Don_Check_sessione_Response" />
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="DonatingMigrationServiceBinding" type="ns:DonatingMigrationService">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+        <wsdl:operation name="Don_Check_sessione">
+            <soap:operation soapAction="Don_Check_sessione" style="document" />
+            <wsdl:input>
+                <soap:body parts="in" use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="out" use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="DonatingMigrationService">
+        <wsdl:port name="DonatingMigrationServiceSOAP" binding="ns:DonatingMigrationServiceBinding">
+            <soap:address location="http://0.0.0.0:9797/Services/Migration/DonatingService/" />
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

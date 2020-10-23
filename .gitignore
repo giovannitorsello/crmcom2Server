@@ -1,0 +1,12 @@
+node_modules/
+script/csv/
+bin/
+log/
+documents/
+uploads/
+config.json
+*.json
+*.jpg
+*.pdf
+*.csv
+

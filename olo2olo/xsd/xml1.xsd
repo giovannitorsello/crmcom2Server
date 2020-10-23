@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.olo.it/Request" targetNamespace="http://www.olo.it/Request" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="type_Request">
+		<xs:sequence>
+			<xs:element name="Parametri">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TipoComunicazione" type="xs:int"/>
+						<xs:element name="DataInvioRichiesta" type="xs:string"/>
+						<xs:element name="CodiceOperatoreRecipient" type="xs:string"/>
+						<xs:element name="CodiceOrdineRecipient" type="xs:string"/>
+						<xs:element name="CodiceOLODonating" type="xs:string"/>
+						<xs:element name="CodiceRisorsa1" type="xs:string"/>
+						<xs:element name="CodiceServizio1" type="xs:string"/>
+						<xs:element name="CodiceRisorsa2" type="xs:string"/>
+						<xs:element name="CodiceServizio2" type="xs:string"/>
+						<xs:element name="NomeCliente" type="xs:string"/>
+						<xs:element name="CognomeClienteRagioneSociale" type="xs:string"/>
+						<xs:element name="CodiceFiscalePartitaIVA" type="xs:string"/>
+						<xs:element name="IdentificativoCorrelazioni" type="xs:string"/>
+						<xs:element name="TotRichieste" type="xs:string"/>
+						<xs:element name="Note" type="xs:string"/>
+						<xs:element name="DirectoryNumber1" type="xs:string"/>
+						<xs:element name="DirectoryNumber2" type="xs:string"/>
+						<xs:element name="DirectoryNumber3" type="xs:string"/>
+						<xs:element name="DirectoryNumber4" type="xs:string"/>
+						<xs:element name="DirectoryNumber5" type="xs:string"/>
+						<xs:element name="DirectoryNumber6" type="xs:string"/>
+						<xs:element name="DirectoryNumber7" type="xs:string"/>
+						<xs:element name="DirectoryNumber8" type="xs:string"/>
+						<xs:element name="DirectoryNumber9" type="xs:string"/>
+						<xs:element name="DirectoryNumber10" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="CodiceOrdineRecipient" use="required"/>
+	</xs:complexType>
+	
+	<xs:element name="xml1">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Request" type="ns1:type_Request" maxOccurs="100"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

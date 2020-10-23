@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Reply>
+	<Header>
+		<Parametri>
+			<OPERATOREMittente>TL2</OPERATOREMittente>
+			<NomeFile> N_TL2_TLC_20070717_00001.xml</NomeFile>
+			<TipoFile>N</TipoFile>
+		</Parametri>
+	</Header>
+	<ReturnCode>
+		<Classe>GNP</Classe>
+		<Codice>00</Codice>
+		<Descrizione>File trasferito correttamente</Descrizione>
+	</ReturnCode>
+</Reply> 
