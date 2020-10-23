@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xml1 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.olo.it/Request"  
+      xsi:schemaLocation="http://localhost:18088/documents/xsd/xml1.xsd">
+  <Request CodiceOrdineRecipient="001">
+    <Parametri>
+      <TipoComunicazione>123</TipoComunicazione>
+      <DataInvioRichiesta>str1234</DataInvioRichiesta>
+      <CodiceOperatoreRecipient>str1234</CodiceOperatoreRecipient>
+      <CodiceOrdineRecipient>str1234</CodiceOrdineRecipient>
+      <CodiceOLODonating>str1234</CodiceOLODonating>
+      <CodiceRisorsa1>str1234</CodiceRisorsa1>
+      <CodiceServizio1>str1234</CodiceServizio1>
+      <CodiceRisorsa2>str1234</CodiceRisorsa2>
+      <CodiceServizio2>str1234</CodiceServizio2>
+      <NomeCliente>str1234</NomeCliente>
+      <CognomeClienteRagioneSociale>str1234</CognomeClienteRagioneSociale>
+      <CodiceFiscalePartitaIVA>str1234</CodiceFiscalePartitaIVA>
+      <IdentificativoCorrelazioni>str1234</IdentificativoCorrelazioni>
+      <TotRichieste>str1234</TotRichieste>
+      <Note>str1234</Note>
+      <DirectoryNumber1>str1234</DirectoryNumber1>
+      <DirectoryNumber2>str1234</DirectoryNumber2>
+      <DirectoryNumber3>str1234</DirectoryNumber3>
+      <DirectoryNumber4>str1234</DirectoryNumber4>
+      <DirectoryNumber5>str1234</DirectoryNumber5>
+      <DirectoryNumber6>str1234</DirectoryNumber6>
+      <DirectoryNumber7>str1234</DirectoryNumber7>
+      <DirectoryNumber8>str1234</DirectoryNumber8>
+      <DirectoryNumber9>str1234</DirectoryNumber9>
+      <DirectoryNumber10>str1234</DirectoryNumber10>
+    </Parametri>
+  </Request>
+</xml1>

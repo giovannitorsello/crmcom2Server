@@ -1,0 +1,14 @@
+node_modules/
+script/csv/
+bin/
+log/
+documents/
+uploads/
+certs/
+config.json
+*.pem
+*.json
+*.jpg
+*.pdf
+*.csv
+
