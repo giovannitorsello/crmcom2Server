@@ -111,6 +111,7 @@ module.exports = {
             code: { type: Sequelize.STRING, allowNull: false },
             state: { type: Sequelize.STRING, allowNull: false }, //active, suspended
             unit: { type: Sequelize.STRING, allowNull: false },
+            category: { type: Sequelize.STRING, allowNull: false },            
             billingPeriod: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 60 },
             price: { type: Sequelize.FLOAT, allowNull: true },
             vat: { type: Sequelize.FLOAT, allowNull: false, defaultValue: 22 },
@@ -123,7 +124,7 @@ module.exports = {
         }, {
             sequelize,
             modelName: 'serviceTemplate',
-            tableName: 'servicesTemplate'
+            tableName: 'serviceTemplates'
         });
 
         Contract.init({
@@ -147,17 +148,19 @@ module.exports = {
         });
 
         ContractService.init({
-            service_description: { type: Sequelize.STRING, allowNull: false },
-            price: { type: Sequelize.FLOAT, allowNull: false, defaultValue: 0.0 },
+            description: { type: Sequelize.STRING, allowNull: false },
+            code: { type: Sequelize.STRING, allowNull: false },
+            state: { type: Sequelize.STRING, allowNull: false }, //active, suspended
+            unit: { type: Sequelize.STRING, allowNull: false },
+            category: { type: Sequelize.STRING, allowNull: false },            
+            billingPeriod: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 60 },
+            price: { type: Sequelize.FLOAT, allowNull: true },
             vat: { type: Sequelize.FLOAT, allowNull: false, defaultValue: 22 },
-            state: { type: Sequelize.STRING, allowNull: false }, //active, suspended  
-            billingPeriod: { type: Sequelize.INTEGER, defaultValue: 60 },
             dayinvoicereminder: { type: Sequelize.INTEGER, allowNull: true },
             nopaydaysbeforedeactivation: { type: Sequelize.INTEGER, allowNull: true },
-            lastbillingdate: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
-            dayforexpirationwarning: { type: Sequelize.INTEGER, allowNull: true },
+            dayforexpirationwarning: { type: Sequelize.INTEGER, allowNull: false },
             creationdate: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
-            objData: { type: Sequelize.JSON },
+            objData: { type: Sequelize.JSON }
         }, {
             sequelize,
             modelName: 'contractService'
@@ -320,11 +323,11 @@ module.exports = {
         //Associations
         Customer.hasMany(Contract);
         Contract.hasMany(DeviceCustomer);
-        ServiceTemplate.hasMany(ContractService);
         Contract.hasMany(ContractService);
         Contract.hasMany(Invoice);
         Invoice.hasMany(InvoiceEntry);
         ContractService.hasMany(InvoiceEntry);
+        ServiceTemplate.hasMany(ContractService);
 
         Contract.belongsTo(Customer);
         DeviceCustomer.belongsTo(Contract);

@@ -189,7 +189,6 @@ module.exports = {
                 })
             });
         });
-
         app.post("/adminarea/registration/send_final_document", function (req, res) {
             var uuid_str = "5bd10c50-fb25-11ea-a7bf-419d96414c8e"//req.body.uuid;
             var email = "giovanni.torsello@gmail.com"//req.body.email;
@@ -638,6 +637,7 @@ module.exports = {
             var obj = req.body.serviceTemplate;
             database.entities.serviceTemplate.findOne({ where: { description: obj.description } }).then(function (item) {
                 if (item === null) {
+                    obj.code = utility.makeUuid();
                     database.entities.serviceTemplate.create(obj).then(function (objnew) {
                         if (objnew !== null) {
                             res.send({ status: 'OK', msg: 'Service template create successfully', serviceTemplate: objnew });
@@ -654,24 +654,27 @@ module.exports = {
             var obj_updated = req.body.serviceTemplate;
             if (obj_updated) {
                 database.entities.serviceTemplate.findOne({ where: { id: obj_updated.id } }).then(function (obj_selected) {
-                    obj_selected.description = obj_updated.description;
-                    obj_selected.code = obj_updated.code;
-                    obj_selected.state = obj_updated.state;
-                    obj_selected.unit = obj_updated.unit;
-                    obj_selected.billingPeriod = obj_updated.billingPeriod;
-                    obj_selected.price = obj_updated.price;
-                    obj_selected.vat = obj_updated.vat;
-                    obj_selected.dayinvoicereminder = obj_updated.dayinvoicereminder;
-                    obj_selected.nopaydaysbeforedeactivation = obj_updated.nopaydaysbeforedeactivation;
-                    obj_selected.dayforexpirationwarning = obj_updated.dayforexpirationwarning;
-                    obj_selected.save().then(function (objupdate) {
-                        if (objupdate !== null) {
-                            res.send({ status: 'OK', msg: 'Service template update successfully', serviceTemplate: objupdate });
-                        }
-                        else {
-                            res.send({ status: 'error', msg: 'Service template update error', serviceTemplate: obj_selected });
-                        }
-                    });
+                    if (obj_selected != null) {
+                        obj_selected.description = obj_updated.description;
+                        obj_selected.code = obj_updated.code;
+                        obj_selected.category = obj_updated.category;
+                        obj_selected.state = obj_updated.state;
+                        obj_selected.unit = obj_updated.unit;
+                        obj_selected.billingPeriod = obj_updated.billingPeriod;
+                        obj_selected.price = obj_updated.price;
+                        obj_selected.vat = obj_updated.vat;
+                        obj_selected.dayinvoicereminder = obj_updated.dayinvoicereminder;
+                        obj_selected.nopaydaysbeforedeactivation = obj_updated.nopaydaysbeforedeactivation;
+                        obj_selected.dayforexpirationwarning = obj_updated.dayforexpirationwarning;
+                        obj_selected.save().then(function (objupdate) {
+                            if (objupdate !== null) {
+                                res.send({ status: 'OK', msg: 'Service template update successfully', serviceTemplate: objupdate });
+                            }
+                            else {
+                                res.send({ status: 'error', msg: 'Service template update error', serviceTemplate: obj_selected });
+                            }
+                        });
+                    }
                 });
             }
         });
@@ -689,6 +692,12 @@ module.exports = {
             });
         });
 
+        app.post("/adminarea/serviceTemplate/getAllServiceCategories", function (req, res) {
+            if (config.serviceCategories)
+                res.send({ status: "OK", msg: "Service categories found", serviceCategories: config.serviceCategories });
+            else
+                res.send({ status: "error", msg: "Service categories not found", serviceTemplates: {} });
+        });
 
         /////////////////////Contract service ///////////////////////////
         app.post("/adminarea/contractService/get_by_id", function (req, res) {
@@ -697,7 +706,6 @@ module.exports = {
                 res.send({ status: "OK", msg: "Service contract selected", data: item });
             });
         });
-
 
         app.post("/adminarea/contractService/insert", function (req, res) {
             var idServiceTemplate = req.body.idServiceTemplate;
@@ -708,7 +716,9 @@ module.exports = {
                         if (contract !== null) {
                             var contrService = {};
 
-                            contrService.service_description = srvTempl.description
+                            contrService.description = srvTempl.description
+                            contrService.unit = srvTempl.unit;
+                            contrService.category = srvTempl.category;
                             contrService.price = srvTempl.price;
                             contrService.vat = srvTempl.vat;
                             contrService.state = "active";
@@ -741,7 +751,7 @@ module.exports = {
         app.post("/adminarea/contractService/update", function (req, res) {
             var obj_updated = req.body.service;
             database.entities.contractService.findOne({ where: { id: obj_updated.id } }).then(function (obj_selected) {
-                obj_selected.service_description = obj_updated.service_description;
+                obj_selected.description = obj_updated.description;
                 obj_selected.state = obj_updated.state;
                 obj_selected.unit = obj_updated.unit;
                 obj_selected.billingPeriod = obj_updated.billingPeriod;
@@ -789,7 +799,7 @@ module.exports = {
             var idContract = req.body.idContract;
             if (idContract)
                 database.entities.contract.findOne({ where: { id: idContract } }).then(function (ctr) {
-                    if (ctr) {                        
+                    if (ctr) {
                         res.send({ status: 'OK', msg: 'Contract found', contract: ctr });
                     }
                     else
@@ -882,7 +892,7 @@ module.exports = {
         /////////////////////Customer ///////////////////////////
         app.post("/adminarea/customer/get_by_id", function (req, res) {
             var userId = req.body.customerId;
-            database.entities.customer.findOne({ where: { id: userId } }).then(function (customer) {                
+            database.entities.customer.findOne({ where: { id: userId } }).then(function (customer) {
                 res.send({ status: 'OK', msg: 'Customer found', data: customer });
             });
         });
@@ -902,7 +912,7 @@ module.exports = {
                     obj.password = utility.makePassword(8);
                     database.entities.customer.create(obj).then(function (cstnew) {
                         if (cstnew !== null) {
-                            res.send({ status: 'OK', msg: 'Customer create successfully', data: cstnew });                            
+                            res.send({ status: 'OK', msg: 'Customer create successfully', data: cstnew });
                         }
                     });
                 }
@@ -960,7 +970,7 @@ module.exports = {
 
                     cst.save().then(function (cstupdate) {
                         if (cstupdate !== null) {
-                            res.send({ status: 'OK', msg: 'Customer update successfully', customer: cstupdate });                            
+                            res.send({ status: 'OK', msg: 'Customer update successfully', customer: cstupdate });
                         }
                         else {
                             res.send({ status: 'error', msg: 'Customer update error', customer: cst });
@@ -972,7 +982,7 @@ module.exports = {
                     customer_updated.uid = utility.makeUuid();
                     database.entities.customer.create(customer_updated).then((cstnew) => {
                         if (cstnew !== null) {
-                            res.send({ status: 'OK', msg: 'New customer insert successfully', customer: cstnew });                            
+                            res.send({ status: 'OK', msg: 'New customer insert successfully', customer: cstnew });
                         }
                         else {
                             res.send({ status: 'error', msg: 'Customer insert error', customer: cstnew });
@@ -1016,7 +1026,7 @@ module.exports = {
             if (userId)
                 database.entities.user.findOne({ where: { id: userId } }).then(function (user) {
                     if (user) {
-                        res.send({ status: 'OK', msg: 'Users found', user: results });                        
+                        res.send({ status: 'OK', msg: 'Users found', user: results });
                     }
                     else
                         res.send({ status: 'OK', msg: 'Users not found', user: {} });
@@ -1083,7 +1093,7 @@ module.exports = {
                     usr.role = user_updated.role;
 
                     usr.save().then(function (usrupdate) {
-                        if (usrupdate !== null) {                            
+                        if (usrupdate !== null) {
                             res.send({ status: 'OK', msg: 'User update successfully', user: usrupdate });
                         }
                         else {
@@ -1098,7 +1108,7 @@ module.exports = {
             var usr = req.body.user;
             database.entities.user.findOne({ where: { id: usr.id } }).then(function (usertodel) {
                 if (usertodel !== null) {
-                    usertodel.destroy();                    
+                    usertodel.destroy();
                     res.send({ status: 'OK', msg: 'User deleted successfully', user: usertodel });
                 }
                 else {
@@ -1112,7 +1122,7 @@ module.exports = {
         app.post("/adminarea/siteBackbone/get_by_id", function (req, res) {
             var idSite = req.body.idSite;
             database.entities.siteBackbone.findOne({ where: { id: idSite } }).then(function (site) {
-                if (site) {                    
+                if (site) {
                     res.send({ status: 'OK', msg: 'Site found', siteBackbone: site });
                 }
                 else
@@ -1194,7 +1204,7 @@ module.exports = {
             var objsel = req.body.siteBackbone;
             database.entities.siteBackbone.findOne({ where: { id: objsel.id } }).then(function (obj) {
                 if (obj !== null) {
-                    obj.destroy();                    
+                    obj.destroy();
                     res.send({ status: 'OK', msg: 'Site deleted successfully', siteBackbone: objsel });
                 }
                 else {
@@ -1218,7 +1228,7 @@ module.exports = {
         app.post("/adminarea/deviceBackbone/get_by_id", function (req, res) {
             var idDevice = req.body.idDevice;
             database.entities.deviceBackbone.findOne({ where: { id: idDevice } }).then(function (dev) {
-                if (dev) {                    
+                if (dev) {
                     res.send({ status: 'OK', msg: 'Device found', deviceCustomer: dev });
                 }
                 else
@@ -1291,7 +1301,7 @@ module.exports = {
             var objsel = req.body.deviceBackbone;
             database.entities.deviceBackbone.findOne({ where: { id: objsel.id } }).then(function (obj) {
                 if (obj !== null) {
-                    obj.destroy();                    
+                    obj.destroy();
                     res.send({ status: 'OK', msg: 'Device deleted successfully', deviceBackbone: obj });
                 }
                 else {

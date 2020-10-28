@@ -146,7 +146,7 @@ module.exports = {
             contract.businessflag = true;
             contract.objdata = { contact: obj.persona_riferimento_contratto, note: obj.note_contratto };
 
-            contract_service.service_description = obj.denominazione_contratto;
+            contract_service.description = obj.denominazione_contratto;
             contract_service.price = parseFloat(obj.importo_mensile);
             contract_service.vat = 22;
             contract_service.billingPeriod = 60;
@@ -168,7 +168,7 @@ module.exports = {
                                         contract_service_new.save();
                                     }
                                     else {
-                                        console.log('Error inserting contract service: ' + contract_service_new.service_description);
+                                        console.log('Error inserting contract service: ' + contract_service_new.description);
                                     }
                                 });
                             });
