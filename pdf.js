@@ -2,6 +2,7 @@ const config = require("./config.js").load();
 const PDFDocument = require('pdfkit');
 const pdftk = require('node-pdftk');
 const fs = require('fs');
+var dateFormat = require("dateformat");
 
 module.exports = {
     app: {},
@@ -11,15 +12,15 @@ module.exports = {
         this.database = db;
     },
     createIdentidyDocumentsPage(customer, callback) {
-        const fileName = config.paths.tempFolder + "IdentDoc-" + customer.uuid + ".pdf";
+        var baseProcessPath=process.cwd();
+        const fileName = baseProcessPath+config.paths.tempFolder + "IdentDoc-" + customer.uuid + ".pdf";
         const doc = new PDFDocument;
-        doc.pipe(fs.createWriteStream(fileName));
-
+        doc.pipe(fs.createWriteStream(fileName));        
         //Load images
-        var imageCiFront = config.paths.customer_identity_document + "CiFront-" + customer.uuid + ".jpg"
-        var imageCiBack = config.paths.customer_identity_document + "CiBack-" + customer.uuid + ".jpg"
-        var imageCfFront = config.paths.customer_identity_document + "CfFront-" + customer.uuid + ".jpg"
-        var imageCfBack = config.paths.customer_identity_document + "CfBack-" + customer.uuid + ".jpg"
+        var imageCiFront = baseProcessPath+config.paths.customer_identity_document + "CiFront-" + customer.uuid + ".jpg"
+        var imageCiBack = baseProcessPath+config.paths.customer_identity_document + "CiBack-" + customer.uuid + ".jpg"
+        var imageCfFront = baseProcessPath+config.paths.customer_identity_document + "CfFront-" + customer.uuid + ".jpg"
+        var imageCfBack = baseProcessPath+config.paths.customer_identity_document + "CfBack-" + customer.uuid + ".jpg"
 
         // Add an image, constrain it to a given size, and center it vertically and horizontally
         var docWidth = 250;
@@ -35,45 +36,62 @@ module.exports = {
         if (fs.existsSync(fileName))
             callback();
         else
-            console.log("Error in crating pdf document identity page");
+            console.log("Error in creating pdf document identity page");
     },
     compileContractTemplate(customer, contract, callback) {
-        var formToFillTemplate = config.paths.documentsTemplateFolder + "GeneralContractTemplate.pdf";
+        var baseProcessPath=process.cwd();
+        var formToFillTemplate = baseProcessPath+config.paths.documentsTemplateFolder + "GeneralContractTemplate.pdf";
+        var identityDocuments = baseProcessPath+config.paths.tempFolder + "IdentDoc-" + customer.uuid + ".pdf";
+        var filledContract = baseProcessPath+config.paths.tempFolder + "contract-" + customer.uuid + ".pdf";
+        var finalDocument = baseProcessPath+config.paths.contractsFolder + "contract-" + customer.uuid + ".pdf";
+        var finalDocumentLocalPath = config.paths.contractsFolder + "contract-" + customer.uuid + ".pdf";
 
-        var identityDocuments = config.paths.tempFolder + "IdentDoc-" + customer.uuid + ".pdf";
-        var filledContract = config.paths.tempFolder + "contract-" + customer.uuid + ".pdf";
-
-        var finalDocument = config.paths.documentsFolder + "contract-" + customer.uuid + ".pdf";
+        var customerName = "";
+        var customer_address = "";
+        var customer_phone = "";
+        var activationDate=dateFormat(new Date(), "dd/mm/yyyy");
+        //azienda
+        if(customer.vatcode) {
+            customerName = customer.company;
+            customer_address = customer.companyaddress;
+            customer_phone = customer.companyphone;            
+        }
+        //privato
+        if(!customer.vatcode && customer.codfis) {
+            customerName = customer.firstname+" "+customer.lastname;
+            customer_address = customer.address;
+            customer_phone = customer.mobilephone;            
+        }
 
         pdftk
             .input(formToFillTemplate)
             .fillForm({
-                activationDate: '20/09/2020',
+                activationDate: activationDate,
                 clientCode: customer.uuid,
-                customerName: "Giovanni Torsello",
-                fiscalCode: 'TRSGNN73H26I549A',
-                phone: '3939241987',
-                fax: '3939241987',
-                customerAddress: 'Via Pasubio n.33',
-                customerCap: '73010',
-                customerCity: 'Soleto',
-                customerProvince: 'LE',
-                customerIdentityCardNumber: "AA 111111",
-                customerEmail: "aaa@bbb",
-                customerInternalContact: 'Giovanni Torsello-2',
-                customerInternalContactPhone: '3939241987-2',
-                invoiceContact: 'Giovanni Torsello-3',
-                invoiceAddress: 'Via Pasubio n.33-2',
-                invoiceCap: '73010-2',
-                invoiceCity: 'Soleto-2',
-                invoiceProvince: 'Le-2',
-                priceOneTimeActivation: '33.00',
-                priceMonthlyFee: '25.0',
-                note: 'Ciao prova di contratto',
-                contractSignCity: 'Soleto',
-                contractSignDate: '20/09/2020',
-                sigantureClient: 'Giovanni Torsello',
-                sendByTraditionalMail: true
+                customerName: customerName,
+                fiscalCode: customer.codfis,
+                phone: customer_phone,
+                fax: customer_phone,
+                customerAddress: customer_address,
+                customerCap: customer.postcode,
+                customerCity: customer.city,
+                customerProvince: contract.invoiceProvince,
+                customerIdentityCardNumber: customer.numci,
+                customerEmail: customer.email,
+                customerInternalContact: customerName,
+                customerInternalContactPhone: customer.phone,
+                invoiceContact: customerName,
+                invoiceAddress: contract.invoiceAddress,
+                invoiceCap: contract.invoiceCAP,
+                invoiceCity: contract.city,
+                invoiceProvince: contract.invoiceProvince,
+                priceOneTimeActivation: contract.objData.valueSelectedServices.activationPrice,
+                priceMonthlyFee: contract.objData.valueSelectedServices.total,
+                note: contract.note,
+                contractSignCity: contract.invoiceCity,
+                contractSignDate: activationDate,
+                signantureClient: contract.signature,
+                sendByTraditionalMail: false
             })
             .flatten()
             .output(filledContract)
@@ -86,7 +104,7 @@ module.exports = {
                     .cat('A B')
                     .output(finalDocument)
                     .then(buffer => {
-                        callback(finalDocument)
+                        callback(finalDocumentLocalPath)
                     })
                     .catch(err => {
                         console.log(err);
@@ -95,8 +113,6 @@ module.exports = {
             .catch(err => {
                 console.log(err);
             });
-
-
     }
 
 

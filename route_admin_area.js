@@ -178,9 +178,9 @@ module.exports = {
       var form = new formidable.IncomingForm();
       form.parse(req, function (err, fields, files) {
         const image_data_base64 = fields.file;
-        const image_file_png =
+        const image_file_png =process.cwd()+
           config.paths.customer_identity_document + fields.imageName + ".png";
-        const image_file_jpg =
+        const image_file_jpg =process.cwd()+
           config.paths.customer_identity_document + fields.imageName + ".jpg";
         const byteCharacters = toUint8Array(image_data_base64);
         const image_data = new Uint8Array(Buffer.from(byteCharacters));
@@ -188,6 +188,11 @@ module.exports = {
           Jimp.read(image_file_png, function (err, image) {
             if (err) {
               console.log(err);
+              res.send({
+                status: "error",
+                msg: "Immagine non salvata",
+                results: {},
+              });
             } else {
               //image.bitmap = floydSteinberg(image.bitmap);
               image.resize(600, 350).quality(50).write(image_file_jpg);
@@ -239,7 +244,6 @@ module.exports = {
       req,
       res
     ) {
-      var uuid_str = "5bd10c50-fb25-11ea-a7bf-419d96414c8e";
       var customer = req.body.customer;
       var contract = req.body.contract;
       pdf.createIdentidyDocumentsPage(customer, function () {
@@ -250,10 +254,9 @@ module.exports = {
             "http://" +
             config.server.hostname +
             ":" +
-            config.server.http_port +
-            "/" +
+            config.server.http_port +           
             finalDocument;
-          if (fs.existsSync(finalDocument))
+          if (fs.existsSync(process.cwd()+finalDocument))
             res.send({
               status: "OK",
               msg: "Documento finale presente",
@@ -1022,6 +1025,7 @@ module.exports = {
               obj_selected.state = obj_updated.state;
               obj_selected.unit = obj_updated.unit;
               obj_selected.billingPeriod = obj_updated.billingPeriod;
+              obj_selected.activationPrice = obj_updated.activationPrice;
               obj_selected.price = obj_updated.price;
               obj_selected.vat = obj_updated.vat;
               obj_selected.dayinvoicereminder = obj_updated.dayinvoicereminder;
@@ -1120,6 +1124,7 @@ module.exports = {
                   contrService.unit = srvTempl.unit;
                   contrService.code = utility.makeUuid();
                   contrService.category = srvTempl.category;
+                  obj_selected.activationPrice = obj_updated.activationPrice;
                   contrService.price = srvTempl.price;
                   contrService.vat = srvTempl.vat;
                   contrService.state = "active";
@@ -1167,6 +1172,7 @@ module.exports = {
           obj_selected.unit = obj_updated.unit;
           obj_selected.billingPeriod = obj_updated.billingPeriod;
           obj_selected.price = obj_updated.price;
+          obj_selected.activationPrice = obj_updated.activationPrice;
           obj_selected.vat = obj_updated.vat;
           obj_selected.dayinvoicereminder = obj_updated.dayinvoicereminder;
           obj_selected.nopaydaysbeforedeactivation =

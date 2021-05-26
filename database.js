@@ -82,6 +82,7 @@ module.exports = {
             lastname: { type: Sequelize.STRING, allowNull: false },
             email: { type: Sequelize.STRING, allowNull: false },
             pec: { type: Sequelize.STRING, allowNull: true },
+            numci: { type: Sequelize.STRING, allowNull: true },
             codfis: { type: Sequelize.STRING, allowNull: true },
             phone: { type: Sequelize.STRING, allowNull: false },
             mobilephone: { type: Sequelize.STRING, allowNull: false },
@@ -112,8 +113,9 @@ module.exports = {
             state: { type: Sequelize.STRING, allowNull: false }, //active, suspended
             unit: { type: Sequelize.STRING, allowNull: false },
             category: { type: Sequelize.STRING, allowNull: false },            
-            billingPeriod: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 60 },
+            billingPeriod: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 60 },            
             price: { type: Sequelize.FLOAT, allowNull: true },
+            activationPrice: { type: Sequelize.FLOAT, allowNull: true },            
             vat: { type: Sequelize.FLOAT, allowNull: false, defaultValue: 22 },
             dayinvoicereminder: { type: Sequelize.INTEGER, allowNull: true },
             nopaydaysbeforedeactivation: { type: Sequelize.INTEGER, allowNull: true },
@@ -136,10 +138,14 @@ module.exports = {
             duration: { type: Sequelize.INTEGER, defaultValue: 365 },
             state: { type: Sequelize.STRING, defaultValue: 'in compilazione' }, //attivo, sospeso, annullato, scaduto
             billingperiod: { type: Sequelize.INTEGER, defaultValue: 60 },
-            automaticrenew: { type: Sequelize.INTEGER, defaultValue: 1 },
+            automaticrenew: { type: Sequelize.INTEGER, defaultValue: 1 },                     
             businessflag: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: true },
             lastbillingdate: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
             creationdate: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
+            invoiceAddress: { type: Sequelize.STRING, allowNull: false },
+            invoiceCity: { type: Sequelize.STRING, allowNull: false },
+            invoiceCAP: { type: Sequelize.STRING, allowNull: false },
+            invoiceProvince: { type: Sequelize.STRING, allowNull: false },
             objData: { type: Sequelize.JSON },
             objSign: { type: Sequelize.JSON }
         }, {
@@ -155,6 +161,7 @@ module.exports = {
             category: { type: Sequelize.STRING, allowNull: false },            
             billingPeriod: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 60 },
             price: { type: Sequelize.FLOAT, allowNull: true },
+            activationPrice: { type: Sequelize.FLOAT, allowNull: true },
             vat: { type: Sequelize.FLOAT, allowNull: false, defaultValue: 22 },
             dayinvoicereminder: { type: Sequelize.INTEGER, allowNull: true },
             nopaydaysbeforedeactivation: { type: Sequelize.INTEGER, allowNull: true },

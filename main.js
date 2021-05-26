@@ -56,9 +56,9 @@ app.use(bodyParser.json({ limit: '2000kb' }));
 //upload folder
 var upload = multer({ dest: './uploads/' })
 //other static contents folders
-app.use('/cache', express.static(process.cwd() + config.paths.cacheFolder));
-app.use('/documents/xsd', express.static(process.cwd() + config.paths.documentsXsdFolder));
-
+app.use(config.paths.documentsXsdFolder, express.static(process.cwd() + config.paths.documentsXsdFolder));
+app.use(config.paths.documentsFolder, express.static(process.cwd() + config.paths.documentsFolder));
+app.use(config.paths.contractsFolder, express.static(process.cwd()+config.paths.contractsFolder));
 
 /* to enable https
 const options = {
