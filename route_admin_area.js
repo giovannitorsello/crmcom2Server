@@ -178,10 +178,16 @@ module.exports = {
       var form = new formidable.IncomingForm();
       form.parse(req, function (err, fields, files) {
         const image_data_base64 = fields.file;
-        const image_file_png =process.cwd()+
-          config.paths.customer_identity_document + fields.imageName + ".png";
-        const image_file_jpg =process.cwd()+
-          config.paths.customer_identity_document + fields.imageName + ".jpg";
+        const image_file_png =
+          process.cwd() +
+          config.paths.customer_identity_document +
+          fields.imageName +
+          ".png";
+        const image_file_jpg =
+          process.cwd() +
+          config.paths.customer_identity_document +
+          fields.imageName +
+          ".jpg";
         const byteCharacters = toUint8Array(image_data_base64);
         const image_data = new Uint8Array(Buffer.from(byteCharacters));
         fs.writeFile(image_file_png, image_data, function () {
@@ -240,56 +246,58 @@ module.exports = {
     });
 
     ////////////////////REGISTRATION/////////////////////
-    app.post("/adminarea/registration/generate_final_document", function (
-      req,
-      res
-    ) {
-      var customer = req.body.customer;
-      var contract = req.body.contract;
-      pdf.createIdentidyDocumentsPage(customer, function () {
-        pdf.compileContractTemplate(customer, contract, function (
-          finalDocument
-        ) {
-          var url =
-            "http://" +
-            config.server.hostname +
-            ":" +
-            config.server.http_port +           
-            finalDocument;
-          if (fs.existsSync(process.cwd()+finalDocument))
-            res.send({
-              status: "OK",
-              msg: "Documento finale presente",
-              results: { urlFinalDocument: url },
-            });
-          else
-            res.send({
-              status: "OK",
-              msg: "Torna indietro e correggi",
-              results: {},
-            });
+    app.post(
+      "/adminarea/registration/generate_final_document",
+      function (req, res) {
+        var customer = req.body.customer;
+        var contract = req.body.contract;
+        pdf.createIdentidyDocumentsPage(customer, function () {
+          pdf.compileContractTemplate(
+            customer,
+            contract,
+            function (finalDocument) {
+              var url =
+                "http://" +
+                config.server.hostname +
+                ":" +
+                config.server.http_port +
+                finalDocument;
+              if (fs.existsSync(process.cwd() + finalDocument))
+                res.send({
+                  status: "OK",
+                  msg: "Documento finale presente",
+                  results: { urlFinalDocument: url },
+                });
+              else
+                res.send({
+                  status: "OK",
+                  msg: "Torna indietro e correggi",
+                  results: {},
+                });
+            }
+          );
         });
-      });
-    });
-    app.post("/adminarea/registration/send_final_document", function (
-      req,
-      res
-    ) {
-      var uuid_str = "5bd10c50-fb25-11ea-a7bf-419d96414c8e"; //req.body.uuid;
-      var email = "giovanni.torsello@gmail.com"; //req.body.email;
+      }
+    );
+    app.post(
+      "/adminarea/registration/send_final_document",
+      function (req, res) {
+        var uuid_str = "5bd10c50-fb25-11ea-a7bf-419d96414c8e"; //req.body.uuid;
+        var email = "giovanni.torsello@gmail.com"; //req.body.email;
 
-      if (!uuid_str) return;
-      const fileName = "./documents/IdentDoc-" + uuid_str + ".pdf";
-      mailer.sendEmail(
-        email,
-        "Invio contratto",
-        "Invio automatico documento finale di avvio contratto",
-        fileName,
-        function (data) {
-          res.send(data);
-        }
-      );
-    });
+        if (!uuid_str) return;
+        const fileName = "./documents/IdentDoc-" + uuid_str + ".pdf";
+        mailer.sendEmail(
+          email,
+          "Invio contratto",
+          "Invio automatico documento finale di avvio contratto",
+          fileName,
+          function (data) {
+            res.send(data);
+          }
+        );
+      }
+    );
     app.post("/adminarea/registration/get_contract", function (req, res) {
       var uuid_str = "5bd10c50-fb25-11ea-a7bf-419d96414c8e"; //req.body.uuid;
       const fileName = "./documents/IdentDoc-" + uuid_str + ".pdf";
@@ -312,6 +320,27 @@ module.exports = {
           msg: "Torna indietro e correggi",
           results: {},
         });
+    });
+    app.post("/adminarea/registration/signature", function (req, res) {
+      var signatureData = req.body.signatureData;
+      var uuid = req.body.uuid;
+      var fileNameSignature = process.cwd() + "/documents/signatures/" + uuid + ".png";
+      var base64Data = signatureData.replace(/^data:image\/png;base64,/, "");
+
+      fs.writeFile(fileNameSignature, base64Data, 'base64', function(err) {
+        if (!err) 
+          res.send({
+            status: "OK",
+            msg: "Firma salvata",
+            results: {},
+          });        
+        else
+          res.send({
+            status: "error",
+            msg: "Errore di salvataggio",
+            results: {},
+          });        
+      });      
     });
 
     /////////////////////GENERAL//////////////////////////
@@ -775,28 +804,28 @@ module.exports = {
         });
     });
 
-    app.post("/adminarea/deviceCustomer/get_all_by_contract", function (
-      req,
-      res
-    ) {
-      var idContract = req.body.idContract;
-      database.entities.deviceCustomer
-        .findAll({ where: { contractId: idContract } })
-        .then(function (results) {
-          if (results)
-            res.send({
-              status: "OK",
-              msg: "Devices found",
-              devicesCustomer: results,
-            });
-          else
-            res.send({
-              status: "OK",
-              msg: "Devices not found",
-              devicesCustomer: {},
-            });
-        });
-    });
+    app.post(
+      "/adminarea/deviceCustomer/get_all_by_contract",
+      function (req, res) {
+        var idContract = req.body.idContract;
+        database.entities.deviceCustomer
+          .findAll({ where: { contractId: idContract } })
+          .then(function (results) {
+            if (results)
+              res.send({
+                status: "OK",
+                msg: "Devices found",
+                devicesCustomer: results,
+              });
+            else
+              res.send({
+                status: "OK",
+                msg: "Devices not found",
+                devicesCustomer: {},
+              });
+          });
+      }
+    );
 
     app.post("/adminarea/deviceCustomer/getMonitored", function (req, res) {
       pingServer.sendMonitoredCustomer(function (devices) {
@@ -1075,23 +1104,23 @@ module.exports = {
         });
     });
 
-    app.post("/adminarea/serviceTemplate/getAllServiceCategories", function (
-      req,
-      res
-    ) {
-      if (config.serviceCategories)
-        res.send({
-          status: "OK",
-          msg: "Service categories found",
-          serviceCategories: config.serviceCategories,
-        });
-      else
-        res.send({
-          status: "error",
-          msg: "Service categories not found",
-          serviceTemplates: {},
-        });
-    });
+    app.post(
+      "/adminarea/serviceTemplate/getAllServiceCategories",
+      function (req, res) {
+        if (config.serviceCategories)
+          res.send({
+            status: "OK",
+            msg: "Service categories found",
+            serviceCategories: config.serviceCategories,
+          });
+        else
+          res.send({
+            status: "error",
+            msg: "Service categories not found",
+            serviceTemplates: {},
+          });
+      }
+    );
 
     /////////////////////Contract service ///////////////////////////
     app.post("/adminarea/contractService/get_by_id", function (req, res) {
@@ -1218,28 +1247,28 @@ module.exports = {
         });
     });
 
-    app.post("/adminarea/contractService/get_all_by_contract", function (
-      req,
-      res
-    ) {
-      var idContract = req.body.idContract;
-      database.entities.contractService
-        .findAll({ where: { contractId: idContract } })
-        .then(function (results) {
-          if (results)
-            res.send({
-              status: "OK",
-              msg: "Services found",
-              services: results,
-            });
-          else
-            res.send({
-              status: "error",
-              msg: "Services not found",
-              services: results,
-            });
-        });
-    });
+    app.post(
+      "/adminarea/contractService/get_all_by_contract",
+      function (req, res) {
+        var idContract = req.body.idContract;
+        database.entities.contractService
+          .findAll({ where: { contractId: idContract } })
+          .then(function (results) {
+            if (results)
+              res.send({
+                status: "OK",
+                msg: "Services found",
+                services: results,
+              });
+            else
+              res.send({
+                status: "error",
+                msg: "Services not found",
+                services: results,
+              });
+          });
+      }
+    );
 
     /////////////////////Contract ///////////////////////////
     app.post("/adminarea/contract/get_by_id", function (req, res) {
@@ -1535,18 +1564,18 @@ module.exports = {
         });
     });
 
-    app.post("/adminarea/customer/get_customer_from_session", function (
-      req,
-      res
-    ) {
-      if (req.session.customer)
-        res.send({
-          status: "OK",
-          msg: "Customer selected",
-          data: req.session.customer,
-        });
-      else res.send({ status: "error", msg: "Customer not found" });
-    });
+    app.post(
+      "/adminarea/customer/get_customer_from_session",
+      function (req, res) {
+        if (req.session.customer)
+          res.send({
+            status: "OK",
+            msg: "Customer selected",
+            data: req.session.customer,
+          });
+        else res.send({ status: "error", msg: "Customer not found" });
+      }
+    );
     ///////////////////// User ///////////////////////////////
     app.post("/adminarea/user/get_by_id", function (req, res) {
       var userId = req.body.idUser;
