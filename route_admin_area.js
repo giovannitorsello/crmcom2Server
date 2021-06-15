@@ -246,16 +246,29 @@ module.exports = {
     });
 
     ////////////////////REGISTRATION/////////////////////
-    app.post(
-      "/adminarea/registration/generate_final_document",
+    app.post("/adminarea/registration/generate_final_document",
       function (req, res) {
         var customer = req.body.customer;
         var contract = req.body.contract;
-        pdf.createIdentidyDocumentsPage(customer, function () {
+        var finalDocument=pdf.compileContractTemplate(customer,contract);
+        var url ="http://"+config.server.hostname+":"+config.server.http_port+finalDocument;
+        if (fs.existsSync(process.cwd() + finalDocument))
+          res.send({
+            status: "OK",
+            msg: "Documento finale presente",
+            results: { urlFinalDocument: url },
+          });
+        else
+          res.send({
+            status: "OK",
+            msg: "Torna indietro e correggi",
+            results: {},
+          });
+        /*pdf.createIdentidyDocumentsPage(customer, function () {
           pdf.compileContractTemplate(
             customer,
             contract,
-            function (finalDocument) {
+            finalDocument => {
               var url =
                 "http://" +
                 config.server.hostname +
@@ -276,13 +289,12 @@ module.exports = {
                 });
             }
           );
-        });
+        });*/
       }
     );
-    app.post(
-      "/adminarea/registration/send_final_document",
+    app.post("/adminarea/registration/send_final_document",
       function (req, res) {
-        var uuid_str = "5bd10c50-fb25-11ea-a7bf-419d96414c8e"; //req.body.uuid;
+        var uuid_str = req.body.uuid;
         var email = "giovanni.torsello@gmail.com"; //req.body.email;
 
         if (!uuid_str) return;
@@ -299,7 +311,7 @@ module.exports = {
       }
     );
     app.post("/adminarea/registration/get_contract", function (req, res) {
-      var uuid_str = "5bd10c50-fb25-11ea-a7bf-419d96414c8e"; //req.body.uuid;
+      var uuid_str = req.body.uuid;
       const fileName = "./documents/IdentDoc-" + uuid_str + ".pdf";
       var url =
         "http://" +
